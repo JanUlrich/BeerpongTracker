@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="cup_buttons">
+        <item>@id/cup1</item>
+        <item>@id/cup2</item>
+        <item>@id/cup3</item>
+        <item>@id/cup4</item>
+        <item>@id/cup5</item>
+        <item>@id/cup6</item>
+        <item>@id/cup7</item>
+        <item>@id/cup8</item>
+        <item>@id/cup9</item>
+        <item>@id/cup10</item>
+        <item>@id/miss</item>
+    </array>
+    <dimen name="cupSize">65dp</dimen>
+</resources>

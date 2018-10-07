@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HitCounter">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/miss"
+            android:layout_width="260dp"
+            android:layout_height="100dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="Miss" />
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/cup7"
+                android:layout_width="@dimen/cupSize"
+                android:layout_height="@dimen/cupSize"
+                android:background="@drawable/cup"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="0"
+                android:textColor="#fff" />
+
+            <Button
+                android:id="@+id/cup8"
+                android:layout_width="@dimen/cupSize"
+                android:layout_height="@dimen/cupSize"
+                android:background="@drawable/cup"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="0"
+                android:textColor="#fff" />
+
+            <Button
+                android:id="@+id/cup9"
+                android:layout_width="@dimen/cupSize"
+                android:layout_height="@dimen/cupSize"
+                android:background="@drawable/cup"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="0"
+                android:textColor="#fff" />
+
+            <Button
+                android:id="@+id/cup10"
+                android:layout_width="@dimen/cupSize"
+                android:layout_height="@dimen/cupSize"
+                android:background="@drawable/cup"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="0"
+                android:textColor="#fff" />
+        </LinearLayout>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/cup4"
+                android:layout_width="@dimen/cupSize"
+                android:layout_height="@dimen/cupSize"
+                android:background="@drawable/cup"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="0"
+                android:textColor="#fff" />
+
+            <Button
+                android:id="@+id/cup5"
+                android:layout_width="@dimen/cupSize"
+                android:layout_height="@dimen/cupSize"
+                android:background="@drawable/cup"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="0"
+                android:textColor="#fff" />
+
+            <Button
+                android:id="@+id/cup6"
+                android:layout_width="@dimen/cupSize"
+                android:layout_height="@dimen/cupSize"
+                android:background="@drawable/cup"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="0"
+                android:textColor="#fff" />
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/cup2"
+                android:layout_width="@dimen/cupSize"
+                android:layout_height="@dimen/cupSize"
+                android:background="@drawable/cup"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="0"
+                android:textColor="#fff" />
+
+            <Button
+                android:id="@+id/cup3"
+                android:layout_width="@dimen/cupSize"
+                android:layout_height="@dimen/cupSize"
+                android:background="@drawable/cup"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="0"
+                android:textColor="#fff" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/cup1"
+            android:layout_width="@dimen/cupSize"
+            android:layout_height="@dimen/cupSize"
+            android:background="@drawable/cup"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="0"
+            android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/stats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
