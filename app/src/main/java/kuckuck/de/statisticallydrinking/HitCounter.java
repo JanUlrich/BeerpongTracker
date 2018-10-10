@@ -8,26 +8,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import kuckuck.de.statisticallydrinking.model.Game;
+import kuckuck.de.statisticallydrinking.model.HitCount;
+
 public class HitCounter extends AppCompatActivity {
 
     private String playerName;
+    private int gameNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hit_counter);
         playerName = "Me, Myself";
+        gameNum = 0;
 
         Resources res = getResources();
         TypedArray buttons = res.obtainTypedArray(R.array.cup_buttons);
@@ -38,76 +39,42 @@ public class HitCounter extends AppCompatActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     try {
-                        int[] count = getHitCount();
-                        count[cupNum]++;
-                        int cupCount = count[cupNum];
-                        setHitCount(count);
-                        button.setText(Integer.toString(cupCount));
-                        calculateHitRate();
+                        HitCount count = addHit(cupNum);
+                        button.setText(Integer.toString(count.getHits(cupNum)));
+                        setHitRate(count.calculateHitRate());
                     } catch (IOException e) {
                     }
                 }
             });
             try {
-                int[] count = getHitCount();
-                int cupCount = count[cupNum];
+                HitCount count = getHitCount();
+                int cupCount = count.getHits(cupNum);
                 button.setText(Integer.toString(cupCount));
-                calculateHitRate();
+                setHitRate(count.calculateHitRate());
             } catch (IOException e) {
             }
         }
     }
 
-    private void calculateHitRate() throws IOException {
+    private void setHitRate(double hitRate) throws IOException {
         TextView statsView = findViewById(R.id.stats);
-        int[] hitCounts = getHitCount();
-        double hits = 0;
-        for(int i=0; i<hitCounts.length-1;i++){
-            hits += hitCounts[i];
-        }
-        double hitRate;
-        if(hitCounts[hitCounts.length-1]+hits > 0)
-            hitRate = hits/(hits+hitCounts[hitCounts.length-1]);
-        else hitRate = 0;
         statsView.setText("Hitrate: "+ round(hitRate*100, 2) + "%");
     }
 
-    private int[] getHitCount() throws IOException {
-        File path = new File(getApplicationContext().getFilesDir(), getFileName());
-        if(!path.exists())
-            return new int[getNumButtons()];
-        Gson gson = new Gson();
-        int[] ret = gson.fromJson(getFileData(path), int[].class);
-        if(ret == null)throw new IOException();
-        return ret;
+    private HitCount getHitCount() throws IOException {
+        return Storage.getGame(getGameName(), getApplicationContext())
+                .getHitCount(playerName, new HitCount(getNumButtons()));
     }
 
-    public void setHitCount(int[] hits) throws IOException {
-        String filename = getFileName();
-        Gson gson = new Gson();
-        FileOutputStream outputStream = new FileOutputStream(
-                getApplicationContext().getFilesDir() + File.separator + filename);
-        outputStream.write(gson.toJson(hits).getBytes());
-        outputStream.close();
+    private String getGameName() {
+        return Integer.toString(gameNum);
     }
 
-    private String getFileName() {
-        return playerName+".data";
-    }
-
-    private static String getFileData(File file) throws IOException {
-        StringBuilder text = new StringBuilder();
-
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        String line;
-
-        while ((line = br.readLine()) != null) {
-            text.append(line);
-            text.append('\n');
-        }
-        br.close();
-
-        return text.toString();
+    private HitCount addHit(int hit) throws IOException {
+        Game game = Storage.getGame(getGameName(), getApplicationContext());
+        HitCount newValue = game.addHit(hit, playerName, new HitCount(getNumButtons()));
+        Storage.saveGame(getGameName(), game, getApplicationContext());
+        return newValue;
     }
 
     private int getNumButtons(){

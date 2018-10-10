@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Statistically Drinking</string>
+    <string name="game_directory">games</string>
 </resources>
