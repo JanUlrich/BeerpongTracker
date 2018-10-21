@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".GameSettings">
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:onClick="addPlayer"
+        android:text="Add Player" />
+    
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/participants"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    
+    <!--
+    In den Game Settings wählt man aus welche Spieler am Spiel teilnehmen
+    drückt man auf einen Spieler kommt man zum Register Hit screen
+
+    Man kann auch nur auf ein Team drücken, dann wird der hit ans team registriert, wenn man den spieler nicht weiß
+    Tabelle:
+        - Team 1 -
+        * Player 1
+        * Player 2
+        - Team 2 -
+    -->
+</LinearLayout>

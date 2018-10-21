@@ -18,6 +18,7 @@
             android:layout_width="260dp"
             android:layout_height="100dp"
             android:gravity="center_vertical|center_horizontal"
+            android:onClick="addMiss"
             android:text="Miss" />
 
 
@@ -156,6 +157,7 @@
                 android:layout_width="100dp"
                 android:layout_height="50dp"
                 android:gravity="right"
+                android:onClick="newGame"
                 android:text="New Game"
                 android:textColor="#ff0f0f" />
 

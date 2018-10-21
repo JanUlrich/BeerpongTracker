@@ -1,12 +1,33 @@
 package kuckuck.de.statisticallydrinking.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 public class Game {
+    private final String gameID;
     HashMap<String, HitCount> hits = new HashMap<>();
 
-    public Game(){
+    public Game(String gameId){
+        this.gameID = gameId;
+    }
 
+    public String getGameId(){
+        return gameID;
+    }
+
+    public static String newGameID() {
+        return Long.toString(System.currentTimeMillis());
+    }
+
+    public List<String> getParticipants(){
+        return Arrays.asList(hits.keySet().toArray(new String[0]));
     }
 
     public HitCount getHitCount(String forPlayer, HitCount defaultHitcount) {
@@ -21,4 +42,7 @@ public class Game {
         return ret;
     }
 
+    public void addPlayer(Player player) {
+        hits.put(player.getName(), new HitCount());
+    }
 }

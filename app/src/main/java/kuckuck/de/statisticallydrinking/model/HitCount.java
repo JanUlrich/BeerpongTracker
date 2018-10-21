@@ -1,11 +1,13 @@
 package kuckuck.de.statisticallydrinking.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class HitCount {
 
-    private int[] hitCounts;
+    private HashMap<Integer,Integer> hitCounts = new HashMap<>();
 
-    public HitCount(int numCups){
-        hitCounts = new int[numCups];
+    public HitCount(){
     }
 
     /**
@@ -13,22 +15,23 @@ public class HitCount {
      */
     public double calculateHitRate() {
         double hits = 0;
-        for(int i=0; i<hitCounts.length-1;i++){
-            hits += hitCounts[i];
-            }
+        for(Integer i : hitCounts.keySet()){
+            if(i != -1)hits += getHits(i);
+        }
         double hitRate;
-        if(hitCounts[hitCounts.length-1]+hits > 0)
-            hitRate = hits/(hits+hitCounts[hitCounts.length-1]);
+        double misses = getHits(-1);
+        if(misses+hits > 0)
+            hitRate = hits/(hits+misses);
         else hitRate = 0;
         return hitRate;
     }
 
     public int getHits(int cupNum) {
-        if(cupNum >= hitCounts.length)return 0;
-        return hitCounts[cupNum];
+        if(!hitCounts.containsKey(cupNum))return 0;
+        return hitCounts.get(cupNum);
     }
 
     public void addHit(int cupNum) {
-        hitCounts[cupNum]++;
+        hitCounts.put(cupNum, getHits(cupNum) + 1);
     }
 }

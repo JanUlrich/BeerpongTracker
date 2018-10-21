@@ -1,5 +1,6 @@
 package kuckuck.de.statisticallydrinking;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.support.v7.app.AppCompatActivity;
@@ -8,27 +9,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import kuckuck.de.statisticallydrinking.model.Game;
 import kuckuck.de.statisticallydrinking.model.HitCount;
+import kuckuck.de.statisticallydrinking.model.Player;
 
 public class HitCounter extends AppCompatActivity {
 
-    private String playerName;
-    private int gameNum;
+    private String playerID;
+    private String gameID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hit_counter);
-        playerName = "Me, Myself";
-        gameNum = 0;
+        String playerName = "Me, Myself";
+        playerID = (playerName);
+        gameID = "0";
 
         Resources res = getResources();
         TypedArray buttons = res.obtainTypedArray(R.array.cup_buttons);
@@ -41,7 +41,6 @@ public class HitCounter extends AppCompatActivity {
                     try {
                         HitCount count = addHit(cupNum);
                         button.setText(Integer.toString(count.getHits(cupNum)));
-                        setHitRate(count.calculateHitRate());
                     } catch (IOException e) {
                     }
                 }
@@ -54,6 +53,24 @@ public class HitCounter extends AppCompatActivity {
             } catch (IOException e) {
             }
         }
+        try {
+            HitCount count = getHitCount();
+            int cupCount = count.getHits(-1);
+            ((Button)findViewById(R.id.miss)).setText(Integer.toString(cupCount));
+            setHitRate(count.calculateHitRate());
+        } catch (IOException e) {
+        }
+    }
+
+    public void newGame(View view) {
+        Intent intent = new Intent(this, GameSettings.class);
+        intent.putExtra(getString(R.string.extra_game), Game.newGameID());
+        startActivity(intent);
+    }
+
+    public void addMiss(View view) throws IOException {
+        HitCount count = addHit(-1);
+        ((Button)findViewById(R.id.miss)).setText(Integer.toString(count.getHits(-1)));
     }
 
     private void setHitRate(double hitRate) throws IOException {
@@ -63,17 +80,18 @@ public class HitCounter extends AppCompatActivity {
 
     private HitCount getHitCount() throws IOException {
         return Storage.getGame(getGameName(), getApplicationContext())
-                .getHitCount(playerName, new HitCount(getNumButtons()));
+                .getHitCount(playerID, new HitCount());
     }
 
     private String getGameName() {
-        return Integer.toString(gameNum);
+        return gameID;
     }
 
     private HitCount addHit(int hit) throws IOException {
         Game game = Storage.getGame(getGameName(), getApplicationContext());
-        HitCount newValue = game.addHit(hit, playerName, new HitCount(getNumButtons()));
+        HitCount newValue = game.addHit(hit, playerID, new HitCount());
         Storage.saveGame(getGameName(), game, getApplicationContext());
+        setHitRate(newValue.calculateHitRate());
         return newValue;
     }
 

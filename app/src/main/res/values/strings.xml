@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Statistically Drinking</string>
     <string name="game_directory">games</string>
+    <string name="player_directory">players</string>
+    <string name="extra_game">de.kuckuck.statisticallydrinking.Intent_extra_game</string>
+    <string name="selectedPlayer">AddPlayer.SelectedPlayer</string>
 </resources>
