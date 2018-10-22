@@ -7,27 +7,68 @@
     android:orientation="vertical"
     tools:context=".GameSettings">
 
-    <Button
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:onClick="addPlayer"
-        android:text="Add Player" />
-    
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/participants"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-    
-    <!--
-    In den Game Settings wählt man aus welche Spieler am Spiel teilnehmen
-    drückt man auf einen Spieler kommt man zum Register Hit screen
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    Man kann auch nur auf ein Team drücken, dann wird der hit ans team registriert, wenn man den spieler nicht weiß
-    Tabelle:
-        - Team 1 -
-        * Player 1
-        * Player 2
-        - Team 2 -
-    -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/RedText"
+            android:text="Team 1" />
+        <Space
+            android:layout_width="100dp"
+            android:layout_height="match_parent"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:onClick="addPlayer1"
+            android:text="Add Player" />
+    </LinearLayout>
+
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/team1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="top">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/BlueText"
+            android:text="Team 2" />
+        <Space
+            android:layout_width="100dp"
+            android:layout_height="match_parent"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:onClick="addPlayer2"
+            android:text="Add Player" />
+    </LinearLayout>
+
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/team2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 </LinearLayout>

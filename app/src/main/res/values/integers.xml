@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="PICK_CONTACT_INTENTION">28924</integer>
-    <integer name="add_player_intent_flag">3182</integer>
+    <integer name="add_player1_intent_flag">3182</integer>
+    <integer name="add_player2_intent_flag">3183</integer>
     <integer name="standard_num_cups">10</integer>
 </resources>
