@@ -19,7 +19,8 @@
         </activity>
         <activity android:name=".ChoosePlayer" />
         <activity android:name=".GameSettings" />
-        <activity android:name=".AddPlayer"></activity>
+        <activity android:name=".AddPlayer" />
+        <activity android:name=".GameList"></activity>
     </application>
 
 </manifest>

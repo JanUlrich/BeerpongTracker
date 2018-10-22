@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import kuckuck.de.statisticallydrinking.model.Game;
+import kuckuck.de.statisticallydrinking.model.Identifiable;
 import kuckuck.de.statisticallydrinking.model.Player;
 
 public class Storage {
@@ -25,12 +26,7 @@ public class Storage {
     }
 
     public static Game getGame(String gameID, Context context) throws IOException {
-        File path = new File(getGameDir(context), gameID);
-        if(!path.exists())return new Game(gameID);
-        Gson gson = new Gson();
-        Game ret = gson.fromJson(getFileData(path), Game.class);
-        if(ret == null)throw new IOException();
-        return ret;
+        return getSavedClass(new File(getGameDir(context), gameID), Game.class);
     }
 
     private static File getGameDir(Context context) {
@@ -51,13 +47,8 @@ public class Storage {
         return folder;
     }
 
-    public static void saveGame(String name, Game game, Context context) throws IOException {
-        String filename = name;
-        Gson gson = new Gson();
-        FileOutputStream outputStream = new FileOutputStream(
-                getGameDir(context).getAbsolutePath() + File.separator + filename);
-        outputStream.write(gson.toJson(game).getBytes());
-        outputStream.close();
+    public static void saveGame(Game game, Context context) throws IOException {
+        saveClass(game, getGameDir(context).getAbsolutePath(), context);
     }
 
     private static String getFileData(File file) throws IOException {
@@ -83,11 +74,14 @@ public class Storage {
         return getSavedClasses(ctx, getPlayerDir(ctx), Player.class);
     }
 
+    public static List<Game> getGames(Context ctx) throws IOException {
+        return getSavedClasses(ctx, getGameDir(ctx), Game.class);
+    }
 
-    private static <T> void saveClass(T data, String folder,Context context) throws IOException {
+    private static <T extends Identifiable> void saveClass(T data, String folder, Context context) throws IOException {
         Gson gson = new Gson();
         String jsonData = gson.toJson(data);
-        String filename = Integer.toString(jsonData.hashCode());
+        String filename = data.getId();//Integer.toString(jsonData.hashCode());
         FileOutputStream outputStream = new FileOutputStream(
                 folder + File.separator + filename);
         outputStream.write(jsonData.getBytes());
@@ -123,4 +117,5 @@ public class Storage {
         }
         return inFiles;
     }
+
 }

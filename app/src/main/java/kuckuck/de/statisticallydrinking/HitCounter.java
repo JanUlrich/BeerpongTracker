@@ -3,6 +3,7 @@ package kuckuck.de.statisticallydrinking;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +26,7 @@ public class HitCounter extends AppCompatActivity {
 
     private String playerID;
     private String gameID;
+    private boolean finishOnDone = false;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -42,8 +44,18 @@ public class HitCounter extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         String playerName = "Me, Myself";
-        playerID = (playerName);
         gameID = "0";
+        Intent intent = getIntent();
+        if(intent != null){
+            if(intent.getStringExtra(getString(R.string.selectedPlayer)) != null &&
+                            intent.getStringExtra(getString(R.string.selectedPlayer)).length() > 0){
+                playerName = intent.getStringExtra(getString(R.string.selectedPlayer));
+                finishOnDone = true;
+                gameID = intent.getStringExtra(getString(R.string.extra_game));
+            }
+        }
+
+        playerID = (playerName);
 
         setTitle(playerName);
 
@@ -58,6 +70,7 @@ public class HitCounter extends AppCompatActivity {
                     try {
                         HitCount count = addHit(cupNum);
                         button.setText(Integer.toString(count.getHits(cupNum)));
+                        done();
                     } catch (IOException e) {
                     }
                 }
@@ -82,12 +95,19 @@ public class HitCounter extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
+            case R.id.action_gamelist:
+                gameList();
+                done();
                 return true;
 
             case R.id.action_newGame:
-                newGame();
+                try {
+                    newGame();
+                    done();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
                 return true;
 
             default:
@@ -98,15 +118,27 @@ public class HitCounter extends AppCompatActivity {
         }
     }
 
-    public void newGame() {
-        Intent intent = new Intent(this, GameSettings.class);
-        intent.putExtra(getString(R.string.extra_game), Game.newGameID());
+    private void gameList(){
+        Intent intent = new Intent(this, GameList.class);
         startActivity(intent);
+    }
+
+    private void newGame() throws IOException {
+        Intent intent = new Intent(this, GameSettings.class);
+        Game game = new Game(Game.newGameID());
+        Storage.saveGame(game, getApplicationContext());
+        intent.putExtra(getString(R.string.extra_game), game.getId());
+        startActivity(intent);
+    }
+
+    private void done() {
+        if(finishOnDone)finish();
     }
 
     public void addMiss(View view) throws IOException {
         HitCount count = addHit(-1);
         ((Button)findViewById(R.id.miss)).setText(Integer.toString(count.getHits(-1)));
+        done();
     }
 
     private void setHitRate(double hitRate) throws IOException {
@@ -116,7 +148,7 @@ public class HitCounter extends AppCompatActivity {
 
     private HitCount getHitCount() throws IOException {
         return Storage.getGame(getGameName(), getApplicationContext())
-                .getHitCount(playerID, new HitCount());
+                .getHitCount(playerID);
     }
 
     private String getGameName() {
@@ -125,8 +157,8 @@ public class HitCounter extends AppCompatActivity {
 
     private HitCount addHit(int hit) throws IOException {
         Game game = Storage.getGame(getGameName(), getApplicationContext());
-        HitCount newValue = game.addHit(hit, playerID, new HitCount());
-        Storage.saveGame(getGameName(), game, getApplicationContext());
+        HitCount newValue = game.addHit(hit, playerID);
+        Storage.saveGame(game, getApplicationContext());
         setHitRate(newValue.calculateHitRate());
         return newValue;
     }

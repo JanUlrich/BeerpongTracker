@@ -5,7 +5,7 @@ package kuckuck.de.statisticallydrinking.model;
  * Like player name, picture and stuff
  * A player name is unique
  */
-public class Player {
+public class Player implements Identifiable{
     private final String name;
 
     public Player(String name){
@@ -23,6 +23,13 @@ public class Player {
 
     @Override
     public boolean equals(Object obj){
-        return name.equals(obj);
+        if(obj instanceof Player)
+            return name.equals(((Player) obj).name);
+        return false;
+    }
+
+    @Override
+    public String getId() {
+        return getName();
     }
 }

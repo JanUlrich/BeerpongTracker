@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public class Game {
+public class Game implements Identifiable{
     private final String gameID;
     HashMap<String, HitCount> hits = new HashMap<>();
     List<Player> team1 = new ArrayList<>();
@@ -48,23 +48,32 @@ public class Game {
         return team2;
     }
 
-    public HitCount getHitCount(String forPlayer, HitCount defaultHitcount) {
-        if(!hits.containsKey(forPlayer))hits.put(forPlayer, defaultHitcount);
+    public HitCount getHitCount(String forPlayer) {
+        if(!hits.containsKey(forPlayer))hits.put(forPlayer, new HitCount());
         return hits.get(forPlayer);
     }
 
-    public HitCount addHit(int cupNum, String forPlayer, HitCount defaultHitcount) {
-        HitCount ret = getHitCount(forPlayer, defaultHitcount);
+    public HitCount addHit(int cupNum, String forPlayer) {
+        HitCount ret = getHitCount(forPlayer);
         ret.addHit(cupNum);
-        hits.put(forPlayer, ret);
+        //hits.put(forPlayer, ret);
         return ret;
     }
 
     public void addPlayerTeam1(Player player) {
-        team1.add(player);
+        if(!team1.contains(player))team1.add(player);
+        if(team2.contains(player))
+            team2.remove(player);
     }
 
     public void addPlayerTeam2(Player player) {
-        team2.add(player);
+        if(!team2.contains(player))team2.add(player);
+        if(team1.contains(player))
+            team1.remove(player);
+    }
+
+    @Override
+    public String getId() {
+        return getGameId();
     }
 }

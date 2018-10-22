@@ -6,4 +6,5 @@
     <string name="selectedPlayer">AddPlayer.SelectedPlayer</string>
     <string name="action_settings">Options</string>
     <string name="action_newGame">New Game</string>
+    <string name="action_gamelist">View Games</string>
 </resources>

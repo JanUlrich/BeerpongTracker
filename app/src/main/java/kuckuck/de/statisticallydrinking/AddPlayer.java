@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -52,6 +53,14 @@ public class AddPlayer extends AppCompatActivity {
                 public void afterTextChanged(Editable s) {
                 }
             });
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Player player = adapter.getItem(position);
+                    returnPlayer(player);
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,8 +70,12 @@ public class AddPlayer extends AppCompatActivity {
         String name = ((EditText) findViewById(R.id.playerSearch)).getText().toString();
         Player newPlayer = new Player(name);
         Storage.savePlayer(newPlayer, getApplicationContext());
+        returnPlayer(newPlayer);
+    }
+
+    private void returnPlayer(Player p){
         Intent resultData = new Intent();
-        resultData.putExtra(getString(R.string.selectedPlayer), name);
+        resultData.putExtra(getString(R.string.selectedPlayer), p.getName());
         setResult(Activity.RESULT_OK, resultData);
         finish();
     }
