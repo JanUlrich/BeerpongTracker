@@ -25,8 +25,14 @@ public class Storage {
         saveClass(pl, getPlayerDir(context).getAbsolutePath(), context);
     }
 
+    public static boolean hasGame(String gameID, Context context) throws IOException {
+        File f = new File(getGameDir(context), gameID);
+        return f.exists();
+    }
+
     public static Game getGame(String gameID, Context context) throws IOException {
-        return getSavedClass(new File(getGameDir(context), gameID), Game.class);
+        File f = new File(getGameDir(context), gameID);
+        return getSavedClass(f, Game.class);
     }
 
     private static File getGameDir(Context context) {

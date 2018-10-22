@@ -43,17 +43,30 @@ public class HitCounter extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        String playerName = "Me, Myself";
+        String playerName = "Me, Myself";//this.getResources().getString(R.string.standard_player_name);
         gameID = "0";
+        try {
+             if(!Storage.hasGame(gameID, this)){
+                 Storage.savePlayer(new Player(playerName), this);
+                 Game standardGame = new Game(gameID);
+                 standardGame.setName("Standard Game");
+                 standardGame.addPlayerTeam1(new Player(playerName));
+                 Storage.saveGame(standardGame, this);
+             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Intent intent = getIntent();
         if(intent != null){
             if(intent.getStringExtra(getString(R.string.selectedPlayer)) != null &&
                             intent.getStringExtra(getString(R.string.selectedPlayer)).length() > 0){
                 playerName = intent.getStringExtra(getString(R.string.selectedPlayer));
-                finishOnDone = true;
                 gameID = intent.getStringExtra(getString(R.string.extra_game));
             }
         }
+
+        if(!playerName.equals("Me, Myself")) //Resources.getSystem().getString(R.string.standard_player_name))
+            finishOnDone = true; //Only when not shooting for myself
 
         playerID = (playerName);
 

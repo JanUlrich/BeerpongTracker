@@ -76,4 +76,8 @@ public class Game implements Identifiable{
     public String getId() {
         return getGameId();
     }
+
+    public void setName(String name) {
+        this.gameName = name;
+    }
 }
