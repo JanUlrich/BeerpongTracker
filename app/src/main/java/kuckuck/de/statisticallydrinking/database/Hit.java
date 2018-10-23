@@ -5,13 +5,15 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity
-public class Hit {
-    public Hit(long timestamp, String playerName, int cup, int cupLayout, long gameId){
+public class Hit {;
+
+    public Hit(long timestamp, String playerName, int cup, int cupLayout, String gameId, int team){
         this.timestamp = timestamp;
         this.playerName = playerName;
         this.cup = cup;
         this.cupLayout = cupLayout;
         this.gameId = gameId;
+        this.team = team;
     }
     @PrimaryKey
     private long timestamp;
@@ -26,13 +28,15 @@ public class Hit {
     private int cupLayout;
 
     @ColumnInfo(name = "game_id")
-    private long gameId;
+    private String gameId;
+
+    private final int team;
 
     public long getTimestamp(){
         return timestamp;
     }
 
-    public long getGameId() {
+    public String getGameId() {
         return gameId;
     }
 
@@ -46,5 +50,9 @@ public class Hit {
 
     public int getCup() {
         return cup;
+    }
+
+    public int getTeam() {
+        return team;
     }
 }

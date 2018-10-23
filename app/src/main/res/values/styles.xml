@@ -13,9 +13,17 @@
         <item name="android:textSize">28dp</item>
     </style>
 
+    <style name="RedTextSmall" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">#D10F51</item>
+    </style>
+
     <style name="BlueText" parent="TextAppearance.AppCompat">
         <item name="android:textColor">#03A9F4</item>
         <item name="android:textSize">28dp</item>
+    </style>
+
+    <style name="BlueTextSmall" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">#03A9F4</item>
     </style>
 
     <style name="PlayerName" parent="TextAppearance.AppCompat">

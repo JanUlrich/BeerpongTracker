@@ -9,7 +9,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/PlayerName"/>
-    <!--
-    Hier noch eine Anzeige für HitRate und geworfene Bälle anzeigen
-    -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/shotsFired"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/hitRate"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/totalHitrate"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>

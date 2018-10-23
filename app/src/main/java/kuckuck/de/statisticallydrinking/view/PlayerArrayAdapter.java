@@ -18,12 +18,19 @@ public class PlayerArrayAdapter extends ArrayAdapter<Player>implements Filterabl
 
     ArrayList<Player> data;
     ArrayList<Player> originalValues;
+    private final String gameId;
 
     public PlayerArrayAdapter(Context context, int resource, List<Player> objects)
+    {
+        this(null, context, resource, objects);
+    }
+
+    public PlayerArrayAdapter(String gameId, Context context, int resource, List<Player> objects)
     {
         super(context, resource, objects);
         data = new ArrayList<>(objects);
         originalValues = new ArrayList<>(objects);
+        this.gameId = gameId;
     }
 
     public boolean isEmpty(){
@@ -44,11 +51,11 @@ public class PlayerArrayAdapter extends ArrayAdapter<Player>implements Filterabl
     public View getView(int position, View convertView, ViewGroup parent)
     {
         if(convertView == null)
-            convertView = new PlayerListItem(getContext());
+            convertView = new PlayerListItem(gameId, getContext());
 
         Player p = data.get(position);//getItem(position);
         PlayerListItem packView = (PlayerListItem) convertView;
-        packView.setPlayer(p);
+        packView.setPlayer(p, parent.getContext());
 
         return convertView;
     }

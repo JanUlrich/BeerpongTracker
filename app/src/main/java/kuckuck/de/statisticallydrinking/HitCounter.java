@@ -1,10 +1,9 @@
 package kuckuck.de.statisticallydrinking;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.location.Location;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +27,7 @@ public class HitCounter extends AppCompatActivity {
     private String playerID;
     private String gameID;
     private boolean finishOnDone = false;
+    private int team;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -44,19 +44,10 @@ public class HitCounter extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        //The standard
         String playerName = "Me, Myself";//this.getResources().getString(R.string.standard_player_name);
         gameID = "0";
-        try {
-             if(!Storage.hasGame(gameID, this)){
-                 Storage.savePlayer(new Player(playerName), this);
-                 Game standardGame = new Game(gameID);
-                 standardGame.setName("Standard Game");
-                 standardGame.addPlayerTeam1(new Player(playerName));
-                 Storage.saveGame(standardGame, this);
-             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //Which gets changed, when Intent got called from GameSettings:
         Intent intent = getIntent();
         if(intent != null){
             if(intent.getStringExtra(getString(R.string.selectedPlayer)) != null &&
@@ -65,9 +56,27 @@ public class HitCounter extends AppCompatActivity {
                 gameID = intent.getStringExtra(getString(R.string.extra_game));
             }
         }
+        //Initialize fields:
+        try {
+            if(!Storage.hasGame(gameID, this)){
+                Storage.savePlayer(new Player(playerName), this);
+                Game standardGame = new Game(gameID, true);
+                standardGame.setName("Standard Game");
+                standardGame.addPlayerTeam1(new Player(playerName));
+                Storage.saveGame(standardGame, this);
+            }
 
-        if(!playerName.equals("Me, Myself")) //Resources.getSystem().getString(R.string.standard_player_name))
-            finishOnDone = true; //Only when not shooting for myself
+            Game game = Storage.getGame(gameID, this);
+            if(game.getTeam1().contains(Storage.getPlayer(playerName))){
+                team = 1;
+            }else{
+                team = 2;
+            }
+            finishOnDone = ! game.isStandardGame();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         playerID = (playerName);
 
@@ -157,7 +166,11 @@ public class HitCounter extends AppCompatActivity {
 
     private void setHitRate(double hitRate) throws IOException {
         TextView statsView = findViewById(R.id.stats);
-        statsView.setText("Hitrate: "+ round(hitRate*100, 2) + "%");
+        statsView.setText("Hitrate: "+toPercent(hitRate));
+    }
+
+    public static String toPercent(double hitRate) {
+        return round(hitRate*100, 2) + "%";
     }
 
     private HitCount getHitCount() throws IOException {
@@ -175,7 +188,7 @@ public class HitCounter extends AppCompatActivity {
         setHitRate(newValue.calculateHitRate());
 
         Storage.saveGame(game, getApplicationContext());
-        Database.saveHit(this.playerID, hit, Long.valueOf(this.gameID), getApplicationContext());
+        Database.saveHit(this.playerID, hit, this.gameID, team, getApplicationContext());
 
         return newValue;
     }

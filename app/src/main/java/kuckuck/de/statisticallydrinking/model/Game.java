@@ -12,20 +12,24 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import kuckuck.de.statisticallydrinking.database.Hit;
-
 public class Game implements Identifiable{
     private final String gameID;
     HashMap<String, HitCount> hits = new HashMap<>();
     List<Player> team1 = new ArrayList<>();
     List<Player> team2 = new ArrayList<>();
     private String gameName;
+    private boolean isStandardGame = false;
 
     public Game(String gameId){
         this.gameID = gameId;
 
         DateFormat df = new SimpleDateFormat("HH:mm");
         gameName = ("Game from "+df.format(Long.valueOf(getGameId())) + "h");
+    }
+
+    public Game(String gameId, boolean standardGame){
+        this(gameId);
+        this.isStandardGame = standardGame;
     }
 
     public String getGameId(){
@@ -83,4 +87,7 @@ public class Game implements Identifiable{
         this.gameName = name;
     }
 
+    public boolean isStandardGame() {
+        return isStandardGame;
+    }
 }

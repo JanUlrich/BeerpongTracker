@@ -15,6 +15,8 @@ import kuckuck.de.statisticallydrinking.view.PlayerArrayAdapter;
 
 public class GameSettings extends AppCompatActivity {
     private String gameId;
+    private PlayerArrayAdapter adapter1;
+    private PlayerArrayAdapter adapter2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +36,20 @@ public class GameSettings extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter1.notifyDataSetChanged();
+        adapter2.notifyDataSetChanged();
+    }
+
     private void initializePlayerList(Game game) {
-        final PlayerArrayAdapter adapter = new PlayerArrayAdapter(this,
+        adapter1 = new PlayerArrayAdapter(gameId, this,
                 -1, game.getTeam1());
 
         ListView listView = findViewById(R.id.team1);
-        listView.setAdapter(adapter);
-        final PlayerArrayAdapter adapter2 = new PlayerArrayAdapter(this,
+        listView.setAdapter(adapter1);
+        adapter2 = new PlayerArrayAdapter(gameId,this,
                 -1, game.getTeam2());
 
         ListView listView2 = findViewById(R.id.team2);
@@ -49,7 +58,7 @@ public class GameSettings extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Player player = adapter.getItem(position);
+                Player player = adapter1.getItem(position);
                 playerShoots(player);
             }
         });
