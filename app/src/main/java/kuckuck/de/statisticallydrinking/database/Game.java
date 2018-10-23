@@ -6,6 +6,14 @@ import android.arch.persistence.room.PrimaryKey;
 
 @Entity
 public class Game {
+    public Game(long timestamp){
+        this.timestamp = timestamp;
+    }
+
     @PrimaryKey
-    private int timestamp;
+    private long timestamp;
+
+    public long getTimestamp() {
+        return timestamp;
+    }
 }

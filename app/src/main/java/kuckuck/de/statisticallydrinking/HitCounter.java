@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.location.Location;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -171,8 +172,11 @@ public class HitCounter extends AppCompatActivity {
     private HitCount addHit(int hit) throws IOException {
         Game game = Storage.getGame(getGameName(), getApplicationContext());
         HitCount newValue = game.addHit(hit, playerID);
-        Storage.saveGame(game, getApplicationContext());
         setHitRate(newValue.calculateHitRate());
+
+        Storage.saveGame(game, getApplicationContext());
+        Database.saveHit(this.playerID, hit, Long.valueOf(this.gameID), getApplicationContext());
+
         return newValue;
     }
 

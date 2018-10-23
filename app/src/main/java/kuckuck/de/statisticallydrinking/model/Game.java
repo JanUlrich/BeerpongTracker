@@ -12,6 +12,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import kuckuck.de.statisticallydrinking.database.Hit;
+
 public class Game implements Identifiable{
     private final String gameID;
     HashMap<String, HitCount> hits = new HashMap<>();
@@ -80,4 +82,5 @@ public class Game implements Identifiable{
     public void setName(String name) {
         this.gameName = name;
     }
+
 }
