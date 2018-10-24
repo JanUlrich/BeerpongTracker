@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import java.io.IOException;
 
+import kuckuck.de.statisticallydrinking.model.AppState;
 import kuckuck.de.statisticallydrinking.model.Game;
 import kuckuck.de.statisticallydrinking.model.Player;
 import kuckuck.de.statisticallydrinking.view.GameArrayAdapter;
@@ -36,6 +37,15 @@ public class GameList extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Game game = adapter.getItem(position);
+                    if(game.isStandardGame()){ //If it is a standard game
+                        try {//... this will get the new standard game:
+                            AppState appState = Storage.getAppState(context);
+                            appState.setCurrentGame(game.getGameId());
+                            Storage.saveAppState(appState, context);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     Intent intent = new Intent(context, GameSettings.class);
                     intent.putExtra(getString(R.string.extra_game), game.getGameId());
                     startActivity(intent);

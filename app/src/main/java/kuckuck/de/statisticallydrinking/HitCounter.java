@@ -1,6 +1,6 @@
 package kuckuck.de.statisticallydrinking;
 
-import android.content.Context;
+import android.arch.persistence.room.PrimaryKey;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -17,7 +17,10 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
+import kuckuck.de.statisticallydrinking.model.AppState;
 import kuckuck.de.statisticallydrinking.model.Game;
 import kuckuck.de.statisticallydrinking.model.HitCount;
 import kuckuck.de.statisticallydrinking.model.Player;
@@ -28,12 +31,38 @@ public class HitCounter extends AppCompatActivity {
     private String gameID;
     private boolean finishOnDone = false;
     private int team;
+    private AppState appState;
+    private Toolbar myToolbar;
+    private Game game;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.hitmenu, menu);
+
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.getItem(0).setVisible(!finishOnDone);
+        menu.getItem(0).setEnabled(!finishOnDone);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            appState = Storage.getAppState(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+            finish();
+        }
+        //If standard game has changed delete this action
+        if (game.isStandardGame() && !appState.getCurrentGame().equals(gameID)) {
+            finish();
+        }
     }
 
     @Override
@@ -41,38 +70,45 @@ public class HitCounter extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hit_counter);
         //from: https://developer.android.com/training/appbar/
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar = (Toolbar) findViewById(R.id.hitcounterMenu);
         setSupportActionBar(myToolbar);
 
         //The standard
-        String playerName = "Me, Myself";//this.getResources().getString(R.string.standard_player_name);
-        gameID = "0";
+        String playerName = this.getResources().getString(R.string.standard_player_name);
+        gameID = null;
         //Which gets changed, when Intent got called from GameSettings:
         Intent intent = getIntent();
-        if(intent != null){
-            if(intent.getStringExtra(getString(R.string.selectedPlayer)) != null &&
-                            intent.getStringExtra(getString(R.string.selectedPlayer)).length() > 0){
-                playerName = intent.getStringExtra(getString(R.string.selectedPlayer));
-                gameID = intent.getStringExtra(getString(R.string.extra_game));
+        if(intent != null &&
+                intent.getStringExtra(getString(R.string.selectedPlayer)) != null &&
+                intent.getStringExtra(getString(R.string.selectedPlayer)).length() > 0){
+            playerName = intent.getStringExtra(getString(R.string.selectedPlayer));
+            gameID = intent.getStringExtra(getString(R.string.extra_game));
+        }
+        try {
+            appState = Storage.getAppState(this);
+            if(gameID == null){
+                if(appState == null){//First startup:
+                    Game game = createStandardGame();
+                    appState = new AppState(game.getGameId());
+                    Storage.saveAppState(appState, this);
+                }
+                gameID = appState.getCurrentGame();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            finish();
         }
         //Initialize fields:
         try {
-            if(!Storage.hasGame(gameID, this)){
-                Storage.savePlayer(new Player(playerName), this);
-                Game standardGame = new Game(gameID, true);
-                standardGame.setName("Standard Game");
-                standardGame.addPlayerTeam1(new Player(playerName));
-                Storage.saveGame(standardGame, this);
-            }
-
-            Game game = Storage.getGame(gameID, this);
+            game = Storage.getGame(gameID, this);
             if(game.getTeam1().contains(Storage.getPlayer(playerName))){
                 team = 1;
             }else{
                 team = 2;
             }
             finishOnDone = ! game.isStandardGame();
+
+            myToolbar.setSubtitle(game.getGameName());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -118,6 +154,17 @@ public class HitCounter extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_refresh_standard_game:
+                try {
+                    Game game = createStandardGame();
+                    appState.setCurrentGame(game.getGameId());
+                    Storage.saveAppState(appState, this);
+                    newGame(game);
+                    finish();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return true;
             case R.id.action_gamelist:
                 gameList();
                 done();
@@ -125,7 +172,7 @@ public class HitCounter extends AppCompatActivity {
 
             case R.id.action_newGame:
                 try {
-                    newGame();
+                    newGame(new Game(Game.newGameID()));
                     done();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -146,9 +193,19 @@ public class HitCounter extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void newGame() throws IOException {
+    private Game createStandardGame() throws IOException {
+        String playerName = this.getResources().getString(R.string.standard_player_name);
+        Storage.savePlayer(new Player(playerName), this);
+        Game standardGame = new Game(Game.newGameID(), true);
+        DateFormat df = new SimpleDateFormat("HH:mm");
+        standardGame.setName("Solo Game from "+df.format(System.currentTimeMillis())+"h");
+        standardGame.addPlayerTeam1(new Player(playerName));
+        Storage.saveGame(standardGame, this);
+        return standardGame;
+    }
+
+    private void newGame(Game game) throws IOException {
         Intent intent = new Intent(this, GameSettings.class);
-        Game game = new Game(Game.newGameID());
         Storage.saveGame(game, getApplicationContext());
         intent.putExtra(getString(R.string.extra_game), game.getId());
         startActivity(intent);

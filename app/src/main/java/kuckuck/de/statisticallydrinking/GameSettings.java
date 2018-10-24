@@ -29,6 +29,10 @@ public class GameSettings extends AppCompatActivity {
             Intent intent = getIntent();
             gameId = intent.getStringExtra(getString(R.string.extra_game));
             Game game = Storage.getGame(gameId, getApplicationContext());
+            if(game.isStandardGame()){
+                playerShoots(game.getTeam1().get(0));
+                finish();
+            }
             initializePlayerList(game);
             setTitle(game.getGameName());
         } catch (IOException e) {

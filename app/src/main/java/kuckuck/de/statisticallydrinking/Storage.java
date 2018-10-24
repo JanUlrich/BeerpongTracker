@@ -1,5 +1,6 @@
 package kuckuck.de.statisticallydrinking;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import kuckuck.de.statisticallydrinking.model.AppState;
 import kuckuck.de.statisticallydrinking.model.Game;
 import kuckuck.de.statisticallydrinking.model.Identifiable;
 import kuckuck.de.statisticallydrinking.model.Player;
@@ -81,7 +83,9 @@ public class Storage {
     }
 
     public static List<Game> getGames(Context ctx) throws IOException {
-        return getSavedClasses(ctx, getGameDir(ctx), Game.class);
+        List<Game> ret = getSavedClasses(ctx, getGameDir(ctx), Game.class);
+        Collections.sort(ret, (a,b)->Long.valueOf(b.getGameId()).compareTo(Long.valueOf(a.getGameId())));
+        return ret;
     }
 
     private static <T extends Identifiable> void saveClass(T data, String folder, Context context) throws IOException {
@@ -124,4 +128,15 @@ public class Storage {
         return inFiles;
     }
 
+    public static AppState getAppState(Context context) throws IOException {
+        File f = new File(context.getFilesDir(), context.getResources().getString(R.string.app_stat_id));
+        if(f.exists()){
+            return getSavedClass(f, AppState.class);
+        }
+        return null;
+    }
+
+    public static void saveAppState(AppState appState, Context context) throws IOException {
+        saveClass(appState, context.getFilesDir().getAbsolutePath(), context);
+    }
 }

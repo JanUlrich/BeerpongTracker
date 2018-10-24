@@ -7,7 +7,8 @@
     <string name="action_settings">Options</string>
     <string name="action_newGame">New Game</string>
     <string name="action_gamelist">View Games</string>
-    <string name="app_stat_id">CurrentAppState</string>
+    <string name="app_stat_id">appState.data</string>
     <string name="standard_player_name">Me, Myself</string>
     <string name="database_name">bigCupForAllTheHits</string>
+    <string name="action_refresh">Reset Game</string>
 </resources>
