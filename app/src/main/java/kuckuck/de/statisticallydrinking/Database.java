@@ -27,6 +27,11 @@ public class Database {
         AsyncTask<String, Void, Hit[]> task = new getAsyncTask(db.hitDao(), onResult).execute(name, gameId);
     }
 
+    public static void saveUndoHit(String forPlayer, Integer cupNum, String gameId, int team, Context context) {
+        AppDatabase db = AppDatabase.getDatabase(context);
+        new insertAsyncTask(db.hitDao()).execute(new Hit(System.currentTimeMillis(), forPlayer, cupNum, 10, gameId, team, true));
+    }
+
     private static class insertAsyncTask extends AsyncTask<Hit, Void, Void> {
 
         private HitDao mAsyncTaskDao;

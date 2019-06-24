@@ -59,6 +59,13 @@ public class Game implements Identifiable{
         return hits.get(forPlayer);
     }
 
+    public Integer removeLastHit(String forPlayer){
+        if(!hits.containsKey(forPlayer)){
+            hits.put(forPlayer, new HitCount());
+        }
+        return hits.get(forPlayer).removeLastHit();
+    }
+
     public HitCount addHit(int cupNum, String forPlayer) {
         HitCount ret = getHitCount(forPlayer);
         ret.addHit(cupNum);
@@ -90,4 +97,5 @@ public class Game implements Identifiable{
     public boolean isStandardGame() {
         return isStandardGame;
     }
+
 }

@@ -7,7 +7,7 @@ import android.content.Context;
 
 import kuckuck.de.statisticallydrinking.R;
 
-@Database(entities = {Game.class, Hit.class}, version = 1, exportSchema = false)
+@Database(entities = {Game.class, Hit.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase INSTANCE;
 
@@ -17,7 +17,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     // Create database here
                     AppDatabase db = Room.databaseBuilder(context,
-                            AppDatabase.class, context.getResources().getString(R.string.database_name)).build();
+                            AppDatabase.class, context.getResources().getString(R.string.database_name)).fallbackToDestructiveMigration().build();
                     INSTANCE = db;
                 }
             }

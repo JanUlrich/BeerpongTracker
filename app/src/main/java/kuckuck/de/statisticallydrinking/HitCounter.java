@@ -19,6 +19,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import kuckuck.de.statisticallydrinking.model.AppState;
 import kuckuck.de.statisticallydrinking.model.Game;
@@ -213,6 +215,29 @@ public class HitCounter extends AppCompatActivity {
 
     private void done() {
         if(finishOnDone)finish();
+    }
+
+    public void undo(View view) throws IOException {
+        Game game = Storage.getGame(getGameName(), getApplicationContext());
+        Integer lastHit = game.removeLastHit(this.playerID);
+        if(lastHit != null){
+            HitCount newValue = game.getHitCount(playerID);
+            setHitRate(newValue.calculateHitRate());
+
+            Storage.saveGame(game, getApplicationContext());
+            Database.saveUndoHit(this.playerID, lastHit, this.gameID, team, getApplicationContext());
+            final Button button;
+            if(lastHit == -1){
+                button = findViewById(R.id.miss);
+            }else{
+                Resources res = getResources();
+                TypedArray buttons = res.obtainTypedArray(R.array.cup_buttons);
+                int buttonID = buttons.getResourceId(lastHit,-1);
+                button = findViewById(buttonID);
+            }
+            button.setText(Integer.toString(newValue.getHits(lastHit)));
+        }
+        done();
     }
 
     public void addMiss(View view) throws IOException {

@@ -2,18 +2,25 @@ package kuckuck.de.statisticallydrinking.database;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity
 public class Hit {;
 
+    @Ignore
     public Hit(long timestamp, String playerName, int cup, int cupLayout, String gameId, int team){
+        this(timestamp, playerName, cup, cupLayout, gameId, team, false);
+    }
+
+    public Hit(long timestamp, String playerName, int cup, int cupLayout, String gameId, int team, boolean isUndo){
         this.timestamp = timestamp;
         this.playerName = playerName;
         this.cup = cup;
         this.cupLayout = cupLayout;
         this.gameId = gameId;
         this.team = team;
+        this.isUndo = isUndo;
     }
     @PrimaryKey
     private long timestamp;
@@ -29,6 +36,9 @@ public class Hit {;
 
     @ColumnInfo(name = "game_id")
     private String gameId;
+
+    @ColumnInfo(name = "undo_operation")
+    private boolean isUndo;
 
     private final int team;
 
@@ -55,4 +65,6 @@ public class Hit {;
     public int getTeam() {
         return team;
     }
+
+    public boolean getIsUndo() { return isUndo; }
 }

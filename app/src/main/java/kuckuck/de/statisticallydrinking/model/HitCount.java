@@ -2,10 +2,13 @@ package kuckuck.de.statisticallydrinking.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
 
 public class HitCount {
 
-    private HashMap<Integer,Integer> hitCounts = new HashMap<>();
+
+    private Stack<Integer> hits = new Stack<>();
 
     public HitCount(){
     }
@@ -14,24 +17,36 @@ public class HitCount {
      * @return hitrate between 0 and 1 (0 = no hit, 1 = every shot was a hit)
      */
     public double calculateHitRate() {
-        double hits = 0;
-        for(Integer i : hitCounts.keySet()){
-            if(i != -1)hits += getHits(i);
+        double numHits = 0;
+        double misses = 0;
+        for(Integer hit : hits){
+            if(hit != -1)numHits ++;
+            else misses++;
         }
         double hitRate;
-        double misses = getHits(-1);
-        if(misses+hits > 0)
-            hitRate = hits/(hits+misses);
+        if(misses+numHits > 0)
+            hitRate = numHits/(numHits+misses);
         else hitRate = 0;
         return hitRate;
     }
 
     public int getHits(int cupNum) {
-        if(!hitCounts.containsKey(cupNum))return 0;
-        return hitCounts.get(cupNum);
+        int totalCount = 0;
+        for(Integer hit : hits){
+            if(hit == cupNum){
+                totalCount++;
+            }
+        }
+        return totalCount;
     }
 
     public void addHit(int cupNum) {
-        hitCounts.put(cupNum, getHits(cupNum) + 1);
+        hits.push(cupNum);
     }
+
+    public Integer removeLastHit() {
+        if(hits.size() == 0) return null;
+        return hits.pop();
+    }
+
 }
